@@ -12,10 +12,10 @@
     "eslint": "eslint src",
     "lint:ci": "eslint src -f junit -o reports/lint.xml src",
     "test:ci": "jest src --coverage --reporters=default --reporters=jest-junit",
-    "clean": "rm -rf coverage reports frontend/coverage frontend/reports frontend/build",
+    "accessibility": "./scripts/accessibility.sh",
+    "zap": "./scripts/zap.sh",
+    "clean": "rm -rf coverage reports frontend/coverage frontend/reports frontend/build src/frontend",
 
-    "docker:shell:frontend": "docker-compose run --rm frontend /bin/bash",
-    "docker:shell:backend": "docker-compose run --rm backend /bin/bash",
     "docker:deps": "docker-compose run --rm backend yarn install && docker-compose run --rm frontend yarn install",
     "docker:start": "docker-compose up -d",
     "docker:stop": "docker-compose down",

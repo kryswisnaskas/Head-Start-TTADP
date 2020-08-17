@@ -29,6 +29,8 @@ Other Commands
 | `yarn docker:test` | Runs tests for the frontend and backend in docker containers |
 | `yarn docker:lint` | Runs the linter for the frontend and backend in docker containers |
 | `yarn docker:audit` | Runs `yarn audit` against frontend and backend dependencies |
+| `yarn accessibility` | Run the accessibility script against the frontend |
+| `yarn zap` | Run [OWASP zap](https://www.zaproxy.org/) against the project |
 | `yarn deps` | Install dependencies for the frontend and backend |
 | `yarn start` | Starts the backend and frontend |
 | `yarn server` | Starts the backend |
@@ -37,6 +39,7 @@ Other Commands
 | `yarn eslint` | Run the linter for the backend and frontend |
 | `yarn lint:ci` | Run the linter in outputting results to the `reports` directory |
 | `yarn test:ci` | Run backend tests outputting results to the `reports` directory |
+| `yarn clean` | Remove temporary test and build files from the project |
 
 Deployment
 ----------

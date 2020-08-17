@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile.dev
     command: yarn server
     user: ${CURRENT_USER:-root}
+    networks:
+      - ttadp
     env_file:
       - .env
     ports:
@@ -18,6 +20,8 @@ services:
       dockerfile: Dockerfile.dev
     command: yarn start
     user: ${CURRENT_USER:-root}
+    networks:
+      - ttadp
     env_file:
       - .env
     stdin_open: true
@@ -30,3 +34,6 @@ services:
       - JEST_JUNIT_OUTPUT_DIR=reports
       - JEST_JUNIT_OUTPUT_NAME=unit.xml
       - BACKEND_PROXY=http://backend:3001
+networks:
+  ttadp:
+    name: ttadp
