@@ -21,7 +21,6 @@
     "docker:stop": "docker-compose down",
     "docker:test": "docker-compose run --rm backend yarn test:ci && docker-compose run --rm frontend yarn test:ci",
     "docker:lint": "docker-compose run --rm backend yarn lint:ci && docker-compose run --rm frontend yarn lint:ci",
-    "docker:audit": "docker-compose run --rm backend ./scripts/audit.sh && docker-compose run --rm frontend ./scripts/audit.sh",
     "docker:shell:frontend": "docker-compose run --rm frontend /bin/bash",
     "docker:shell:backend": "docker-compose run --rm backend /bin/bash"
   },

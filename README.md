@@ -28,7 +28,6 @@ Other Commands
 | `yarn docker:stop` | Stops the backend and frontend docker containers |
 | `yarn docker:test` | Runs tests for the frontend and backend in docker containers |
 | `yarn docker:lint` | Runs the linter for the frontend and backend in docker containers |
-| `yarn docker:audit` | Runs `yarn audit` against frontend and backend dependencies |
 | `yarn deps` | Install dependencies for the frontend and backend |
 | `yarn start` | Starts the backend and frontend |
 | `yarn server` | Starts the backend |
