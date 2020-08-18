@@ -14,9 +14,11 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "test:ci": "CI=true yarn test --coverage --reporters=default --reporters=jest-junit"
+    "test": "react-scripts test",
+    "test:ci": "CI=true yarn test --coverage --reporters=default --reporters=jest-junit",
+    "lint": "eslint src",
+    "lint:ci": "eslint -f junit -o reports/lint.xml src"
   },
   "eslintConfig": {
     "root": true,

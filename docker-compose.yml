@@ -12,6 +12,9 @@ services:
       - "3001:3001"
     volumes:
       - ".:/app:rw"
+    environment:
+      - JEST_JUNIT_OUTPUT_DIR=reports
+      - JEST_JUNIT_OUTPUT_NAME=unit.xml
   frontend:
     build:
       context: .
