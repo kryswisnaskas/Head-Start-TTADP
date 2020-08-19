@@ -16,7 +16,7 @@
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "test": "react-scripts test",
-    "test:ci": "JEST_JUNIT_OUTPUT_DIR=reports JEST_JUNIT_OUTPUT_NAME=unit.xml CI=true yarn test --coverage --reporters=default --reporters=jest-junit",
+    "test:ci": "cross-env JEST_JUNIT_OUTPUT_DIR=reports JEST_JUNIT_OUTPUT_NAME=unit.xml CI=true yarn test --coverage --reporters=default --reporters=jest-junit",
     "lint": "eslint src",
     "lint:ci": "eslint -f junit -o reports/lint.xml src"
   },
@@ -67,6 +67,7 @@
     "@testing-library/dom": "^7.21.7",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-plugin-import": "^2.22.0",
