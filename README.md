@@ -11,12 +11,22 @@ Make sure Docker is installed. To check run `docker ps`
 
 Run `yarn docker:deps`. This builds the frontend and backend docker containers and install dependencies. You only need to run this step the first time you fire up the app and when dependencies are added/updated/removed. Running `yarn docker:start` starts the backend and frontend, browse to `http://localhost:3000` to hit the frontend and `http://localhost:3000/api` to hit the backend. Copying `.env` to `.env.dev`, substituting in your user id and group id will cause any files created in docker containers to be owned by your user on your host.
 
+You can also run build commands directly on your host (without docker). Make sure you install dependencies when changing execution method. You could see some odd errors if you install dependencies for docker and then run yarn commands directly on the host, especially if you are developing on windows. If you want to use the host yarn commands be sure to run `yarn deps` before any other yarn commands. Likewise if you want to use docker make sure you run `yarn docker:deps`.
+
 The frontend [proxies requests](https://create-react-app.dev/docs/proxying-api-requests-in-development/) to paths it doesn't recognize to the backend.
 
 Running Tests
 -------------
 
 Run `yarn docker:deps` to install dependencies. Run `yarn docker:test` to run all tests for the frontend and backend.
+
+Docker on Windows
+-----------------
+
+You may run into some issues running the docker commands on Windows:
+
+ * If you run into `Permission Denied` errors see [this issue](https://github.com/docker/for-win/issues/3385#issuecomment-501931980)
+ * You can try to speed up execution time on windows with solutions posted to [this issue](https://github.com/docker/for-win/issues/1936)
 
 Other Commands
 --------------
