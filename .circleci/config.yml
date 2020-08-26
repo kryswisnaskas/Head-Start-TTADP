@@ -53,6 +53,12 @@ jobs:
           path: frontend/reports/
       - store_artifacts:
           path: frontend/coverage/
+  deploy_dev:
+    filters:  # using regex filters requires the entire branch to match
+      branches:
+        only:  # only branches matching the below regex filters will run
+          - /main*/
+
 workflows:
   build_and_test:
     jobs:
@@ -66,3 +72,8 @@ workflows:
       - test_frontend:
           requires:
             - build
+      - deploy_dev:
+          requires:
+            - lint_backend_and_frontend
+            - test_backend
+            - test_frontend
