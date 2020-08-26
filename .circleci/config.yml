@@ -54,10 +54,16 @@ jobs:
       - store_artifacts:
           path: frontend/coverage/
   deploy_dev:
-    filters:  # using regex filters requires the entire branch to match
+    filters:
       branches:
         only:  # only branches matching the below regex filters will run
-          - /main*/
+          - /sj-cd-init*/
+      executor: docker-executor
+        steps:
+          - attach_workspace:
+              at: .
+          - run:
+              command: echo $MY_FAKE_ENV_VAR
 
 workflows:
   build_and_test:
