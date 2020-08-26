@@ -54,10 +54,6 @@ jobs:
       - store_artifacts:
           path: frontend/coverage/
   deploy_dev:
-    filters:
-      branches:
-        only:  # only branches matching the below regex filters will run
-          - /sj-cd-init*/
     executor: docker-executor
     steps:
       - attach_workspace:
@@ -83,3 +79,7 @@ workflows:
             - lint_backend_and_frontend
             - test_backend
             - test_frontend
+          filters:
+            branches:
+              only:  # only branches matching the below regex filters will run
+                - /sj-cd-init*/
