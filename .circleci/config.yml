@@ -53,13 +53,18 @@ jobs:
           path: frontend/reports/
       - store_artifacts:
           path: frontend/coverage/
-  deploy_dev:
+
+  deploy_sandbox:
     executor: docker-executor
     steps:
       - attach_workspace:
           at: .
       - run:
-          command: echo $MY_FAKE_ENV_VAR
+          name: Login with service account
+          command: cf auth USERNAME PASSWORD
+      - run:
+          name: Push application
+          command: cf push --vars-file /deployment_config/dev_vars.yml
 
 workflows:
   build_and_test:
@@ -74,7 +79,7 @@ workflows:
       - test_frontend:
           requires:
             - build
-      - deploy_dev:
+      - deploy_sandbox:
           requires:
             - lint_backend_and_frontend
             - test_backend
