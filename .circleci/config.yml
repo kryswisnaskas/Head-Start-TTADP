@@ -18,6 +18,7 @@ jobs:
       - run: cf -v
       - run: GREETING=hello
       - run: ls -la
+      - run: cd / && ls -la
       - persist_to_workspace:
           root: .
           paths:
@@ -29,6 +30,7 @@ jobs:
           at: .
       - run: echo ${GREETING:-NULL}
       - run: ls -la
+      - run: cd / && ls -la
       - run:
           name: Lint backend and frontend
           command: yarn run lint:ci && cd frontend && yarn run lint:ci
