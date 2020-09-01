@@ -62,9 +62,10 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - run: cf -v
       - run:
           name: Login with service account
-          command: cf auth USERNAME PASSWORD
+          command: cf login -a https://api.fr.cloud.gov -u $CLOUDGOV_SANDBOX_DEPLOYER_USERNAME -p $CLOUDGOV_SANDBOX_DEPLOYER_PASSWORD -o $CLOUDGOV_ORG -s $CLOUDGOV_SANDBOX_SPACE
       - run:
           name: Push application
           command: cf push --vars-file /deployment_config/dev_vars.yml
