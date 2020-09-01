@@ -19,6 +19,7 @@ jobs:
       - run: GREETING=hello
       - run: ls -la
       - run: cd / && ls -la
+      - run: cd / && mkdir a1
       - persist_to_workspace:
           root: .
           paths:
