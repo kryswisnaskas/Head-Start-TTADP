@@ -17,9 +17,9 @@ jobs:
       - run: sudo dpkg -i cf-cli_amd64.deb
       - run: cf -v
       - run: GREETING=hello
+      - run: pwd
       - run: ls -la
       - run: cd / && ls -la
-      - run: cd / && mkdir a1
       - persist_to_workspace:
           root: .
           paths:
@@ -30,6 +30,7 @@ jobs:
       - attach_workspace:
           at: .
       - run: echo ${GREETING:-NULL}
+      - run: cd / && mkdir a1
       - run: ls -la
       - run: cd / && ls -la
       - run:
