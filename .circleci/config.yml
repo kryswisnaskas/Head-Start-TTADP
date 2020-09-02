@@ -23,7 +23,6 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - run: cf -v
       - run:
           name: Lint backend and frontend
           command: yarn run lint:ci && cd frontend && yarn run lint:ci
