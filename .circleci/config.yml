@@ -17,12 +17,12 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - home/circleci/project/
+            - .
   lint_backend_and_frontend:
     executor: docker-executor
     steps:
       - attach_workspace:
-          at: home/circleci/project/
+          at: .
       - run: cf -v
       - run:
           name: Lint backend and frontend
@@ -35,7 +35,7 @@ jobs:
     executor: docker-executor
     steps:
       - attach_workspace:
-          at: home/circleci/project/
+          at: .
       - run:
           name: Test backend
           command: yarn run test:ci
@@ -47,7 +47,7 @@ jobs:
     executor: docker-executor
     steps:
       - attach_workspace:
-          at: home/circleci/project/
+          at: .
       - run:
           name: Test frontend
           command: cd frontend && yarn run test:ci
@@ -60,7 +60,7 @@ jobs:
     executor: docker-executor
     steps:
       - attach_workspace:
-          at: home/circleci/project/
+          at: .
       - run: curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
       - run: sudo dpkg -i cf-cli_amd64.deb
       - run: cf -v
