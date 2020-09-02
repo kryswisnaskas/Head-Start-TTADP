@@ -22,18 +22,16 @@ jobs:
       - run: ls -la
       - run: cd / && ls -la
       - persist_to_workspace:
-          root: .
+          root: /
           paths:
-            - .
+            - usr/bin/cf
+            - home/circleci/project
   lint_backend_and_frontend:
     executor: docker-executor
     steps:
       - attach_workspace:
-          at: .
-      - run: echo ${GREETING:-NULL}
-      - run: cd / && mkdir a1
-      - run: ls -la
-      - run: cd / && ls -la
+          at: /
+      - run: cf -v
       - run:
           name: Lint backend and frontend
           command: yarn run lint:ci && cd frontend && yarn run lint:ci
