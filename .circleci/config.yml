@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@4.0.0
+  cloudfoundry: circleci/cloudfoundry@0.1.73
 executors:
   docker-executor:
     # for docker you must specify an image to use for the primary container
@@ -13,24 +14,16 @@ jobs:
     steps:
       - checkout
       - run: yarn deps
-      - run: curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
-      - run: sudo dpkg -i cf-cli_amd64.deb
       - run: cf -v
-      - run: which cf
-      - run: GREETING=hello
-      - run: pwd
-      - run: ls -la
-      - run: cd / && ls -la
       - persist_to_workspace:
-          root: /
+          root: .
           paths:
-            - usr/bin/cf
-            - home/circleci/project
+            - .
   lint_backend_and_frontend:
     executor: docker-executor
     steps:
       - attach_workspace:
-          at: /
+          at: .
       - run: cf -v
       - run:
           name: Lint backend and frontend
