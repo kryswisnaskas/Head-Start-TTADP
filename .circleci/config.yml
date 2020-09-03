@@ -93,7 +93,7 @@ workflows:
       - test_frontend:
           requires:
             - build
-      - deploy_sandbox:
+      - deploy:
           requires:
             - lint_backend_and_frontend
             - test_backend
