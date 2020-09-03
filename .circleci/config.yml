@@ -7,6 +7,15 @@ executors:
     # for docker you must specify an image to use for the primary container
     docker:
       - image: circleci/node:12.18.3
+parameters:
+  cg_org:
+    description: "Cloud Foundry cloud.gov organization name"
+    default: "hhs-acf-prototyping"
+    type: string
+  cg_api:
+    description: "URL of Cloud Controller in Cloud Foundry cloud.gov instance"
+    default: "https://api.fr.cloud.gov"
+    type: string
 jobs:
   build:
     # Each job must declare an executor
@@ -57,15 +66,6 @@ jobs:
 
   deploy:
     executor: docker-executor
-    parameters:
-      cg_org:
-        description: "cloud.gov organization name"
-        default: "hhs-acf-prototyping"
-        type: string
-      cg_api:
-        description: "URL of Cloud Controller in Cloud Foundry instance"
-        default: "https://api.fr.cloud.gov"
-        type: string
     steps:
       - attach_workspace:
           at: .
@@ -75,7 +75,7 @@ jobs:
       -
       - run:
           name: Login with service account
-          command: cf login -a << parameters.cg_api >> -u $CLOUDGOV_SANDBOX_DEPLOYER_USERNAME -p $CLOUDGOV_SANDBOX_DEPLOYER_PASSWORD -o << parameters.cg_org >> -s $CLOUDGOV_SANDBOX_SPACE
+          command: cf login -a << pipeline.parameters.cg_api >> -u $CLOUDGOV_SANDBOX_DEPLOYER_USERNAME -p $CLOUDGOV_SANDBOX_DEPLOYER_PASSWORD -o << pipeline.parameters.cg_org >> -s $CLOUDGOV_SANDBOX_SPACE
       - run:
           name: Push application
           command: cf push --vars-file deployment_config/dev_vars.yml
