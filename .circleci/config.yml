@@ -55,17 +55,27 @@ jobs:
       - store_artifacts:
           path: frontend/coverage/
 
-  deploy_sandbox:
+  deploy:
     executor: docker-executor
+    parameters:
+      cg_org:
+        description: "cloud.gov organization name"
+        default: "hhs-acf-prototyping"
+        type: string
+      cg_api:
+        description: "URL of Cloud Controller in Cloud Foundry instance"
+        default: "https://api.fr.cloud.gov"
+        type: string
     steps:
       - attach_workspace:
           at: .
       - run: curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
       - run: sudo dpkg -i cf-cli_amd64.deb
       - run: cf -v
+      -
       - run:
           name: Login with service account
-          command: cf login -a https://api.fr.cloud.gov -u $CLOUDGOV_SANDBOX_DEPLOYER_USERNAME -p $CLOUDGOV_SANDBOX_DEPLOYER_PASSWORD -o $CLOUDGOV_ORG -s $CLOUDGOV_SANDBOX_SPACE
+          command: cf login -a << parameters.cg_api >> -u $CLOUDGOV_SANDBOX_DEPLOYER_USERNAME -p $CLOUDGOV_SANDBOX_DEPLOYER_PASSWORD -o << parameters.cg_org >> -s $CLOUDGOV_SANDBOX_SPACE
       - run:
           name: Push application
           command: cf push --vars-file deployment_config/dev_vars.yml

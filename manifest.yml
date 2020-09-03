@@ -1,4 +1,4 @@
 ---
 applications:
-- name: ttadp
+- name: tta-smarthub
   instances: ((instances))
