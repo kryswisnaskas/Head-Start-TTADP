@@ -6,7 +6,7 @@ executors:
   docker-executor:
     # for docker you must specify an image to use for the primary container
     docker:
-      - image: circleci/node:12.18.3
+      - image: circleci/node:12.18
 parameters:
   cg_org:
     description: "Cloud Foundry cloud.gov organization name"
