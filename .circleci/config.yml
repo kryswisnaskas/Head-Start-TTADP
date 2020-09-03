@@ -64,7 +64,7 @@ jobs:
       - store_artifacts:
           path: frontend/coverage/
 
-  deploy:
+  deploy_sandbox:
     executor: docker-executor
     steps:
       - attach_workspace:
@@ -72,7 +72,6 @@ jobs:
       - run: curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
       - run: sudo dpkg -i cf-cli_amd64.deb
       - run: cf -v
-      -
       - run:
           name: Login with service account
           command: cf login -a << pipeline.parameters.cg_api >> -u $CLOUDGOV_SANDBOX_DEPLOYER_USERNAME -p $CLOUDGOV_SANDBOX_DEPLOYER_PASSWORD -o << pipeline.parameters.cg_org >> -s $CLOUDGOV_SANDBOX_SPACE
@@ -93,7 +92,7 @@ workflows:
       - test_frontend:
           requires:
             - build
-      - deploy:
+      - deploy_sandbox:
           requires:
             - lint_backend_and_frontend
             - test_backend
