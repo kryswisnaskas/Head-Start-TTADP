@@ -94,7 +94,7 @@ jobs:
       - run: sudo dpkg -i cf-cli_amd64.deb
       - run:
           name: Login with service account
-          command: cf login -a << pipeline.parameters.cg_api >> -u $CLOUDGOV_SANDBOX_DEPLOYER_USERNAME -p $CLOUDGOV_SANDBOX_DEPLOYER_PASSWORD -o << pipeline.parameters.cg_org >> -s $CLOUDGOV_SANDBOX_SPACE
+          command: cf login -a << pipeline.parameters.cg_api >> -u $CLOUDGOV_DEPLOYER_USERNAME -p $CLOUDGOV_DEPLOYER_PASSWORD -o << pipeline.parameters.cg_org >> -s $CLOUDGOV_SPACE
       - when:
           condition:
             and:
@@ -102,7 +102,7 @@ jobs:
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.sandbox_git_branch >>]
           steps:
             - run:
-                name: Push application to dev/sandbox
+                name: Push application to sandbox
                 command: cf push --vars-file deployment_config/dev_vars.yml
       - when:
           condition:
@@ -131,7 +131,6 @@ jobs:
             - run:
                 name: Push application to prod
                 command: cf push --vars-file deployment_config/prod_vars.yml
-
 workflows:
   build_and_test:
     jobs:
@@ -145,6 +144,15 @@ workflows:
       - test_frontend:
           requires:
             - build
+  deploy:
+    when:
+      condition:
+        or:
+          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.sandbox_git_branch >>]
+          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.dev_git_branch >>]
+          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.staging_git_branch >>]
+          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.prod_git_branch >>]
+    jobs:
       - deploy:
           requires:
             - lint_backend_and_frontend
