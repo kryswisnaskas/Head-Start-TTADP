@@ -144,7 +144,7 @@ workflows:
       - test_frontend:
           requires:
             - build
-  deploy:
+  build:
     when:
       condition:
         or:
@@ -153,8 +153,4 @@ workflows:
           - equal: [<< pipeline.git.branch >>, << pipeline.parameters.staging_git_branch >>]
           - equal: [<< pipeline.git.branch >>, << pipeline.parameters.prod_git_branch >>]
     jobs:
-      - deploy:
-          requires:
-            - lint_backend_and_frontend
-            - test_backend
-            - test_frontend
+      - deploy
