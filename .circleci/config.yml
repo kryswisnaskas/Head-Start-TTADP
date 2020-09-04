@@ -133,6 +133,14 @@ jobs:
                 command: cf push --vars-file deployment_config/prod_vars.yml
 workflows:
   build_and_test:
+    # workflow runs when branch does NOT match sandbox, dev, staging, or prod
+    unless:
+      condition:
+        or:
+          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.sandbox_git_branch >>]
+          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.dev_git_branch >>]
+          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.staging_git_branch >>]
+          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.prod_git_branch >>]
     jobs:
       - build
       - lint_backend_and_frontend:
@@ -144,7 +152,8 @@ workflows:
       - test_frontend:
           requires:
             - build
-  build:
+  build_test_deploy:
+    # workflow runs when branch matches sandbox, dev, staging, or prod
     when:
       condition:
         or:
@@ -153,4 +162,19 @@ workflows:
           - equal: [<< pipeline.git.branch >>, << pipeline.parameters.staging_git_branch >>]
           - equal: [<< pipeline.git.branch >>, << pipeline.parameters.prod_git_branch >>]
     jobs:
-      - deploy
+      - build
+      - lint_backend_and_frontend:
+          requires:
+            - build
+      - test_backend:
+          requires:
+            - build
+      - test_frontend:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - build
+            - lint_backend_and_frontend
+            - test_backend
+            - test_frontend
