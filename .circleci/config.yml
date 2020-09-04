@@ -48,7 +48,7 @@ jobs:
           root: .
           paths:
             - .
-  lint_backend_and_frontend:
+  lint:
     executor: docker-executor
     steps:
       - attach_workspace:
@@ -102,7 +102,7 @@ jobs:
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.sandbox_git_branch >>]
           steps:
             - run:
-                name: Push application to sandbox
+                name: Push application with sandbox vars
                 command: cf push --vars-file deployment_config/dev_vars.yml
       - when:
           condition:
@@ -111,7 +111,7 @@ jobs:
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.dev_git_branch >>]
           steps:
             - run:
-                name: Push application to dev
+                name: Push application with dev vars
                 command: cf push --vars-file deployment_config/dev_vars.yml
       - when:
           condition:
@@ -120,7 +120,7 @@ jobs:
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.staging_git_branch >>]
           steps:
             - run:
-                name: Push application to staging
+                name: Push application with staging vars
                 command: cf push --vars-file deployment_config/staging_vars.yml
       - when:
           condition:
@@ -129,41 +129,13 @@ jobs:
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.prod_git_branch >>]
           steps:
             - run:
-                name: Push application to prod
+                name: Push application with prod vars
                 command: cf push --vars-file deployment_config/prod_vars.yml
 workflows:
-  build_and_test:
-    # workflow runs when branch does NOT match sandbox, dev, staging, or prod
-    unless:
-      condition:
-        or:
-          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.sandbox_git_branch >>]
-          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.dev_git_branch >>]
-          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.staging_git_branch >>]
-          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.prod_git_branch >>]
+  build_test_conditional_deploy:
     jobs:
       - build
-      - lint_backend_and_frontend:
-          requires:
-            - build
-      - test_backend:
-          requires:
-            - build
-      - test_frontend:
-          requires:
-            - build
-  build_test_deploy:
-    # workflow runs when branch matches sandbox, dev, staging, or prod
-    when:
-      condition:
-        or:
-          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.sandbox_git_branch >>]
-          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.dev_git_branch >>]
-          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.staging_git_branch >>]
-          - equal: [<< pipeline.git.branch >>, << pipeline.parameters.prod_git_branch >>]
-    jobs:
-      - build
-      - lint_backend_and_frontend:
+      - lint:
           requires:
             - build
       - test_backend:
@@ -175,6 +147,13 @@ workflows:
       - deploy:
           requires:
             - build
-            - lint_backend_and_frontend
+            - lint
             - test_backend
             - test_frontend
+          filters:
+            branches:
+              only:
+                - << pipeline.parameters.sandbox_git_branch >>
+                - << pipeline.parameters.dev_git_branch >>
+                - << pipeline.parameters.staging_git_branch >>
+                - << pipeline.parameters.prod_git_branch >>
