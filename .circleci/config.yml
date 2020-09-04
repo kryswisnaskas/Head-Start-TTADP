@@ -16,6 +16,27 @@ parameters:
     description: "URL of Cloud Controller in Cloud Foundry cloud.gov instance"
     default: "https://api.fr.cloud.gov"
     type: string
+  prod_git_url:
+    default: "https://github.com/HHS/Head-Start-TTADP"
+    type: string
+  staging_git_url:
+    default: "https://github.com/HHS/Head-Start-TTADP"
+    type: string
+  dev_git_url:
+    default: "https://github.com/adhocteam/Head-Start-TTADP"
+    type: string
+  prod_git_branch:
+    default: "production"
+    type: string
+  staging_git_branch:
+    default: "main"
+    type: string
+  dev_git_branch:
+    default: "main"
+    type: string
+  sandbox_git_branch:
+    default: "sj-cd-init"
+    type: string
 jobs:
   build:
     # Each job must declare an executor
@@ -64,20 +85,52 @@ jobs:
       - store_artifacts:
           path: frontend/coverage/
 
-  deploy_sandbox:
+  deploy:
     executor: docker-executor
     steps:
       - attach_workspace:
           at: .
       - run: curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
       - run: sudo dpkg -i cf-cli_amd64.deb
-      - run: cf -v
       - run:
           name: Login with service account
           command: cf login -a << pipeline.parameters.cg_api >> -u $CLOUDGOV_SANDBOX_DEPLOYER_USERNAME -p $CLOUDGOV_SANDBOX_DEPLOYER_PASSWORD -o << pipeline.parameters.cg_org >> -s $CLOUDGOV_SANDBOX_SPACE
-      - run:
-          name: Push application
-          command: cf push --vars-file deployment_config/dev_vars.yml
+      - when:
+          condition:
+            and:
+              - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.dev_git_url >>]
+              - equal: [<< pipeline.git.branch >>, << pipeline.parameters.sandbox_git_branch >>]
+          steps:
+            - run:
+                name: Push application to dev/sandbox
+                command: cf push --vars-file deployment_config/dev_vars.yml
+      - when:
+          condition:
+            and:
+              - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.dev_git_url >>]
+              - equal: [<< pipeline.git.branch >>, << pipeline.parameters.dev_git_branch >>]
+          steps:
+            - run:
+                name: Push application to dev
+                command: cf push --vars-file deployment_config/dev_vars.yml
+      - when:
+          condition:
+            and:
+              - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.staging_git_url >>]
+              - equal: [<< pipeline.git.branch >>, << pipeline.parameters.staging_git_branch >>]
+          steps:
+            - run:
+                name: Push application to staging
+                command: cf push --vars-file deployment_config/staging_vars.yml
+      - when:
+          condition:
+            and:
+              - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.prod_git_url >>]
+              - equal: [<< pipeline.git.branch >>, << pipeline.parameters.prod_git_branch >>]
+          steps:
+            - run:
+                name: Push application to prod
+                command: cf push --vars-file deployment_config/prod_vars.yml
 
 workflows:
   build_and_test:
@@ -92,12 +145,8 @@ workflows:
       - test_frontend:
           requires:
             - build
-      - deploy_sandbox:
+      - deploy:
           requires:
             - lint_backend_and_frontend
             - test_backend
             - test_frontend
-          filters:
-            branches:
-              only:  # only branches matching the below regex filters will run
-                - /sj-cd-init*/
