@@ -6,6 +6,9 @@ module.exports = {
       primaryKey: true,
       autoIncrement: true,
     },
+    hsesUserId: {
+      type: Sequelize.INTEGER,
+    },
     name: {
       type: Sequelize.STRING,
     },

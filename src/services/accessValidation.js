@@ -7,13 +7,14 @@ const namespace = 'SERVICE:ACCESS_VALIDATION';
  * Finds or creates a user in the database.
  *
  * //potentially use also or instead of the user id provided by HSES
- * @param {Object} userData - user information containing email address
+ * @param {Object} userData - user information containing email address, hses user id
  * @returns {Promise<any>} - returns a promise
  */
 export default function findOrCreateUser(data) {
   return sequelize.transaction((transaction) => User.findOrCreate({
     where: {
-      email: data.email,
+      hsesUserId: data.hsesUserId,
+      ...data,
     },
     transaction,
   }) // findOrCreate API returns 2 values (instance, created). We only need to return the first.

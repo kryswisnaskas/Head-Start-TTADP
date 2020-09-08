@@ -11,6 +11,7 @@ describe('findOrCreateUser', () => {
   });
   test('Finds an existing user when a matching user exists', async () => {
     const user = {
+      hsesUserId: 33,
       email: 'test@test.com',
     };
     // Verify that there are no users
@@ -26,18 +27,20 @@ describe('findOrCreateUser', () => {
     const retrievedUser = await findOrCreateUser(user);
     const allUsers = await User.findAll();
 
+    expect(retrievedUser.hsesUserId).toEqual(user.hsesUserId);
     expect(retrievedUser.email).toEqual(user.email);
     expect(allUsers.length).toBe(1);
   });
 
   test('Creates a new user when a matching user does not exist', async () => {
     const user = {
+      hsesUserId: 33,
       email: 'test@test.com',
     };
     // Check that the above `user` doesn't exist in the DB yet.
     const existingUser = await User.findOne({
       where: {
-        email: user.email,
+        hsesUserId: user.hsesUserId,
       },
     });
 

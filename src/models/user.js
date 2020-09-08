@@ -23,6 +23,7 @@ export default (sequelize, DataTypes) => {
       field: 'userId',
       autoIncrement: true,
     },
+    hsesUserId: DataTypes.BIGINT,
     name: DataTypes.STRING,
     phoneNumber: DataTypes.STRING,
     email: DataTypes.STRING,
