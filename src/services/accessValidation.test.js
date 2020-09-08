@@ -49,13 +49,13 @@ describe('findOrCreateUser', () => {
     // Now find or create `user2`, and confirm that a new user was created
     const createdUser = await findOrCreateUser(user);
 
-    expect(createdUser.userId).toBeDefined();
+    expect(createdUser.id).toBeDefined();
     expect(createdUser.email).toEqual(user.email);
 
     // Look up the user that was just created, make sure it can now be found
     const existingUserAfter = await User.findOne({
       where: {
-        userId: createdUser.userId,
+        id: createdUser.id,
       },
     });
     expect(existingUserAfter).toBeInstanceOf(User);
